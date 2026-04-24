@@ -25,6 +25,7 @@ app.UseHttpsRedirection();
 app.UseCors("AllowAll");
 
 
+
 var expensesList = new List<Expense>
 {
     new Expense { Id = 1, Description = "Groceries", Amount = 150.75m, Date = DateTime.Now.AddDays(-2), Category = ExpenseCategory.Food },
@@ -70,6 +71,12 @@ app.MapDelete("/expenses/delete/{id}", (int id) =>
         expensesList.Remove(expenseToRemove);
     }
 }).WithName("DeleteExpense");
+
+app.MapPost("/auth/login", (LoginDto loginDto) =>
+{
+    return (loginDto.username == "admin" && loginDto.password == "123456") ? Results.Ok("Login successful") : Results.Unauthorized();
+}).WithName("login");
+
 app.Run();
 
 public class Expense
@@ -89,4 +96,10 @@ public enum ExpenseCategory
     Utilities,
     Healthcare,
     Other
+}
+
+public class LoginDto
+{
+    public string username { get; set; }
+    public string password { get; set; }
 }
